@@ -71,7 +71,10 @@
       {
         "group": "Wireframes",
         "pages": [
-          "wireframes/platform-overview"
+          "wireframes/platform-overview",
+          "wireframes/overview",
+          "wireframes/system-architecture",
+          "wireframes/customer-dashboard"
         ]
       }
     ]

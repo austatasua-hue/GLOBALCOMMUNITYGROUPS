@@ -1,0 +1,90 @@
+---
+title: "System Architecture Wireframe"
+sidebarTitle: "System Architecture"
+description: "Layered architecture for the marketplace: client, application, data, and external providers with request paths."
+---
+
+The platform uses a layered architecture that separates the client apps, application services, persistent data, and external providers. Each layer scales independently and communicates through well-defined APIs and queues.
+
+## Layered diagram
+
+```mermaid
+flowchart TB
+    subgraph Client["Client Layer (Mobile + Desktop)"]
+        Web[Web App - React/Vue]
+        Mobile[Mobile Browser]
+        PWA[Progressive Web App]
+    end
+
+    subgraph Edge["Edge Layer"]
+        CDN[CDN + WAF]
+        LB[Load Balancer]
+    end
+
+    subgraph App["Application Layer"]
+        API[REST / GraphQL API]
+        Auth[Auth & Session Service]
+        Orders[Order Service]
+        Webhooks[Webhook Dispatcher]
+        Queue[Background Workers]
+    end
+
+    subgraph Data["Data Layer"]
+        DB[(PostgreSQL / MySQL)]
+        Cache[(Redis Cache)]
+        Logs[(Audit & API Logs)]
+        Object[(S3 - Invoices, Assets)]
+    end
+
+    subgraph External["External Providers"]
+        SMS[SMS / Virtual Number APIs]
+        Social[Social Media APIs]
+        Pay[Payment Gateways]
+        Mail[Email / SMS Notifications]
+    end
+
+    Web --> CDN
+    Mobile --> CDN
+    PWA --> CDN
+    CDN --> LB
+    LB --> API
+    API --> Auth
+    API --> Orders
+    Orders --> DB
+    API --> Cache
+    Orders --> Queue
+    Queue --> SMS
+    Queue --> Social
+    Orders --> Pay
+    Queue --> Webhooks
+    Webhooks --> Logs
+    Queue --> Mail
+    API --> Object
+```
+
+## Layer responsibilities
+
+| Layer | Responsibilities |
+| --- | --- |
+| Client | Rendering, form validation, session tokens, offline caching |
+| Edge | TLS termination, DDoS protection, geo routing, static assets |
+| Application | Business logic, orchestration, auth, webhook fan-out |
+| Data | Durable storage, caching, audit trails, file storage |
+| External | Number provisioning, social boosting, payments, notifications |
+
+## Scaling notes
+
+<CardGroup cols={2}>
+  <Card title="Stateless API" icon="server">
+    Horizontal scaling behind a load balancer with sticky-session-free auth.
+  </Card>
+  <Card title="Queue-Backed Provisioning" icon="list-check">
+    Provider calls happen in background workers with retries and dead-letter queues.
+  </Card>
+  <Card title="Read Replicas" icon="database">
+    Analytics and admin queries hit replicas to protect transactional load.
+  </Card>
+  <Card title="Modular Services" icon="puzzle-piece">
+    Each category (SMS, virtual numbers, boosting) is a swappable module.
+  </Card>
+</CardGroup>
