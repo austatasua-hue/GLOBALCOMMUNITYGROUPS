@@ -74,7 +74,9 @@
           "wireframes/platform-overview",
           "wireframes/overview",
           "wireframes/system-architecture",
-          "wireframes/customer-dashboard"
+          "wireframes/customer-dashboard",
+          "wireframes/admin-panel",
+          "wireframes/purchase-flow"
         ]
       }
     ]

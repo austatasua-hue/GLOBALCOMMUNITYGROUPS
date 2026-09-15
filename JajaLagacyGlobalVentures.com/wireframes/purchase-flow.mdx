@@ -1,0 +1,81 @@
+---
+title: "Purchase Flow Wireframe"
+sidebarTitle: "Purchase Flow"
+description: "End-to-end order lifecycle: cart, payment, provisioning, webhooks, and post-purchase states with failure paths."
+---
+
+The purchase flow spans checkout, payment processing, provider provisioning, webhook fan-out, and delivery to the customer dashboard. Every step is idempotent and observable with retries on provider failures.
+
+## Happy path
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant W as Web App
+    participant A as API
+    participant P as Payment Gateway
+    participant Q as Worker Queue
+    participant X as Provider (SMS / Social)
+    participant H as Webhook Dispatcher
+    participant D as Dashboard
+
+    U->>W: Browse catalog, add to cart
+    W->>A: POST /orders (create pending order)
+    A->>P: Create payment intent
+    P-->>W: Client secret
+    U->>P: Enter card / PayPal / crypto
+    P-->>A: payment.succeeded webhook
+    A->>Q: Enqueue provisioning job
+    Q->>X: Reserve number / start boost
+    X-->>Q: Resource issued
+    Q->>A: Mark order fulfilled
+    A->>H: Fire "purchase.completed"
+    A-->>D: Push tool to My Tools
+    A-->>U: Email receipt + credentials
+```
+
+## State machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> PendingPayment: Checkout
+    PendingPayment --> Paid: payment.succeeded
+    PendingPayment --> Failed: payment.failed
+    Paid --> Provisioning: Enqueue job
+    Provisioning --> Fulfilled: Provider OK
+    Provisioning --> ProviderError: Provider fail
+    ProviderError --> Provisioning: Retry (max 5)
+    ProviderError --> Refunded: Give up + refund
+    Fulfilled --> Refunded: User dispute
+    Failed --> [*]
+    Refunded --> [*]
+    Fulfilled --> [*]
+```
+
+## Failure paths
+
+| Failure | Detection | Recovery |
+| --- | --- | --- |
+| Card declined | Gateway response | Prompt user to retry or switch method |
+| Crypto underpaid | Blockchain listener | Ask user to top up or refund partial |
+| Provider timeout | Job timeout | Retry with backoff, then refund |
+| Webhook 5xx to merchant | Delivery log | Exponential retry up to 24h, alert on final fail |
+| Duplicate submission | Idempotency key | Return existing order, no double charge |
+
+## Post-purchase surfaces
+
+<CardGroup cols={2}>
+  <Card title="Dashboard Push" icon="bolt">
+    The new tool appears in My Tools with credentials and controls.
+  </Card>
+  <Card title="Email Receipt" icon="envelope">
+    Itemized receipt with invoice PDF and support link.
+  </Card>
+  <Card title="Webhook Fan-out" icon="broadcast-tower">
+    `purchase.completed` fires to all registered merchant URLs.
+  </Card>
+  <Card title="Analytics Event" icon="chart-column">
+    Order metrics land in the admin sales analytics in real time.
+  </Card>
+</CardGroup>
