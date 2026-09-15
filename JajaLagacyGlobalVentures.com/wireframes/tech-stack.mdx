@@ -1,0 +1,55 @@
+---
+title: "Technical Stack Wireframe"
+sidebarTitle: "Tech Stack"
+description: "Recommended frameworks, database, cache, payments, providers, and hosting for the marketplace platform."
+---
+
+The recommended stack favors mature frameworks, horizontal scaling, and a modular service boundary so new categories plug in without rewrites.
+
+## Stack summary
+
+| Layer | Recommendation | Alternative |
+| --- | --- | --- |
+| Frontend | Next.js (React) | Nuxt (Vue) |
+| Backend | NestJS (Node.js) | Laravel (PHP) |
+| Database | PostgreSQL | MySQL 8 |
+| Cache & Queue | Redis + BullMQ | Redis + Laravel Horizon |
+| Search | Meilisearch | OpenSearch |
+| Object storage | S3-compatible | Cloudflare R2 |
+| Payments | Stripe, PayPal, Coinbase Commerce | Adyen, NOWPayments |
+| SMS / virtual numbers | SMS-Activate, 5sim, Twilio | TextVerified, Vonage |
+| Social boosting | Vendor APIs per platform | Aggregator SMM panels |
+| Email | Postmark | SendGrid |
+| Observability | OpenTelemetry + Grafana | Datadog |
+| Hosting | AWS ECS / Fly.io | GCP Cloud Run |
+
+## Environments
+
+<CardGroup cols={3}>
+  <Card title="Local" icon="laptop-code">
+    Docker Compose with seeded providers and fake payment gateway.
+  </Card>
+  <Card title="Staging" icon="flask">
+    Full stack against sandbox provider and payment credentials.
+  </Card>
+  <Card title="Production" icon="rocket">
+    Multi-AZ, autoscaling, WAF, and read replicas.
+  </Card>
+</CardGroup>
+
+## CI/CD outline
+
+<Steps>
+  <Step title="PR checks">
+    Lint, unit tests, type checks, and preview deploy.
+  </Step>
+  <Step title="Merge to main">
+    Integration tests, container build, and staging deploy.
+  </Step>
+  <Step title="Promote">
+    Manual approval gates production release with canary rollout.
+  </Step>
+  <Step title="Observe">
+    Error rate, latency, and business KPIs monitored with rollback triggers.
+  </Step>
+</Steps>

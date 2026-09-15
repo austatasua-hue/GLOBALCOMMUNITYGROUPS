@@ -1,0 +1,52 @@
+---
+title: "Security and Compliance Wireframe"
+sidebarTitle: "Security & Compliance"
+description: "Transport security, authentication, fraud prevention, and privacy compliance controls for the marketplace platform."
+---
+
+Security spans transport, authentication, application logic, and data handling. Compliance covers GDPR-style privacy rights plus regional digital-service regulations.
+
+## Control layers
+
+<CardGroup cols={2}>
+  <Card title="Transport Security" icon="lock">
+    TLS 1.3 across all endpoints, HSTS, and modern cipher suites.
+  </Card>
+  <Card title="Auth & Access" icon="key">
+    Argon2 password hashing, 2FA (TOTP + WebAuthn), session revocation, RBAC.
+  </Card>
+  <Card title="Fraud Prevention" icon="shield-exclamation">
+    Rate limits, device fingerprinting, velocity checks, and payment risk scoring.
+  </Card>
+  <Card title="Data Protection" icon="database">
+    At-rest encryption, per-tenant keys, and least-privilege access to PII.
+  </Card>
+  <Card title="Audit Trails" icon="clipboard-list">
+    Immutable logs for admin actions, refunds, impersonation, and data exports.
+  </Card>
+  <Card title="Privacy Rights" icon="scale-balanced">
+    Data export, deletion, consent management, and DPO contact.
+  </Card>
+</CardGroup>
+
+## Threat model summary
+
+| Threat | Mitigation |
+| --- | --- |
+| Credential stuffing | Rate limits, breached-password checks, 2FA prompts |
+| Card testing | Velocity limits, 3DS, gateway risk scoring |
+| Account takeover | Device recognition, email alerts, session revocation |
+| Provider abuse | Per-user daily caps, anomaly detection |
+| Data exfiltration | Scoped API keys, IP allowlists, audit alerts |
+| Webhook spoofing | HMAC signatures, timestamp windows, replay protection |
+
+## Compliance checklist
+
+- [ ] Publish Privacy Policy, Terms of Service, and Cookie Policy.
+- [ ] Consent banner with granular categories (analytics, marketing).
+- [ ] Data Subject Access Request (DSAR) workflow: export and delete.
+- [ ] Data Processing Agreement (DPA) available to business customers.
+- [ ] Records of processing activities (RoPA) maintained internally.
+- [ ] Sub-processor list published and versioned.
+- [ ] Breach notification runbook with 72-hour disclosure window.
+- [ ] Age gating and prohibited-use enforcement for restricted regions.

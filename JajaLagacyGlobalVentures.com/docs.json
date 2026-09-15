@@ -71,12 +71,14 @@
       {
         "group": "Wireframes",
         "pages": [
-          "wireframes/platform-overview",
           "wireframes/overview",
           "wireframes/system-architecture",
           "wireframes/customer-dashboard",
           "wireframes/admin-panel",
-          "wireframes/purchase-flow"
+          "wireframes/purchase-flow",
+          "wireframes/product-catalog",
+          "wireframes/security-compliance",
+          "wireframes/tech-stack"
         ]
       }
     ]

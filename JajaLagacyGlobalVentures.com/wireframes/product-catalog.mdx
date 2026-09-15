@@ -1,0 +1,66 @@
+---
+title: "Product Catalog Wireframe"
+sidebarTitle: "Product Catalog"
+description: "Catalog taxonomy for SMS verification, virtual numbers, social boosting, and expandable digital utility modules."
+---
+
+The catalog is organized into four top-level categories, each with its own taxonomy and provider mapping. New categories plug in as modules without changing the core order or billing systems.
+
+## Taxonomy
+
+```mermaid
+flowchart LR
+    Cat[Catalog]
+    Cat --> C1[SMS Verification]
+    Cat --> C2[Virtual Numbers]
+    Cat --> C3[Social Media Boosting]
+    Cat --> C4[Digital Utilities]
+
+    C1 --> C1a[By Service - WhatsApp, Telegram, Google, etc.]
+    C1 --> C1b[By Country]
+    C1 --> C1c[Bulk Packs]
+
+    C2 --> C2a[By Country - 190+]
+    C2 --> C2b[Short-term Rentals]
+    C2 --> C2c[Long-term Rentals]
+    C2 --> C2d[SMS + Voice]
+
+    C3 --> C3a[Followers]
+    C3 --> C3b[Likes / Views]
+    C3 --> C3c[Engagement Packs]
+    C3 --> C3d[Platform: IG, TikTok, YouTube, X]
+
+    C4 --> C4a[Email Verifiers]
+    C4 --> C4b[Proxies / VPN Credits]
+    C4 --> C4c[Expandable Modules]
+```
+
+## Product schema
+
+| Field | Description |
+| --- | --- |
+| `sku` | Unique identifier |
+| `category` | SMS, virtual_number, social_boost, utility |
+| `provider_id` | Upstream provider mapping |
+| `country_code` | ISO-3166 (when applicable) |
+| `service_slug` | e.g. `whatsapp`, `instagram_followers` |
+| `price_tiers` | Quantity-based pricing |
+| `availability` | in_stock, low, out |
+| `tags` | Free-form for search and filtering |
+
+## Adding a new category
+
+<Steps>
+  <Step title="Define the module">
+    Create a category record with slug, display name, and provider adapter.
+  </Step>
+  <Step title="Implement the adapter">
+    Adapter must implement `reserve`, `release`, `status`, and `webhook` handlers.
+  </Step>
+  <Step title="Register in catalog">
+    Add products in the admin catalog with pricing and availability.
+  </Step>
+  <Step title="Enable checkout">
+    Flip the feature flag; the module becomes available to customers.
+  </Step>
+</Steps>
