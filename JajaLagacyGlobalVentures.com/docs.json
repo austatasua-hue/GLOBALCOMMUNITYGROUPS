@@ -82,5 +82,8 @@
         ]
       }
     ]
+  },
+  "seo": {
+    "indexing": "navigable"
   }
 }
