@@ -84,6 +84,9 @@
     ]
   },
   "seo": {
-    "indexing": "navigable"
+    "indexing": "navigable",
+    "metatags": {
+      "Building Tomorrow ": "Online digital services "
+    }
   }
 }
